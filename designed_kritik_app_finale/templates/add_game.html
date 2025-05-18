@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}ДОБАВИТЬ ИГРУ{% endblock %}
+
+{% block content %}
+<div class="cyberpunk-container">
+    <h2 class="neon-heading">[ДОБАВИТЬ НОВУЮ ИГРУ]</h2>
+    
+    <form method="POST" enctype="multipart/form-data" class="cyber-form">
+        <div class="form-grid">
+            
+            <div class="form-column">
+                <div class="form-group cyber-input-group">
+                    <label for="title" class="cyber-label">[НАЗВАНИЕ]</label>
+                    <input type="text" id="title" name="title" required class="cyber-input">
+                </div>
+                
+                <div class="form-group cyber-input-group">
+                    <label for="cover_image" class="cyber-label">[ОБЛОЖКА]</label>
+                    <input type="file" id="cover_image" name="cover_image" accept="image/*" class="cyber-input">
+                </div>
+                
+                <div class="form-group cyber-input-group">
+                    <label for="rating" class="cyber-label">[РЕЙТИНГ (0-10)]</label>
+                    <input type="number" id="rating" name="rating" min="0" max="10" 
+                           value="5" required class="cyber-input">
+                </div>
+            </div>
+            
+            
+            <div class="form-column">
+                <div class="form-group cyber-input-group">
+                    <label class="cyber-label">[ДАТЫ]</label>
+                    <div class="date-fields">
+                        <input type="date" id="start_date" name="start_date" class="cyber-input">
+                        <span class="cyber-separator">—</span>
+                        <input type="date" id="end_date" name="end_date" class="cyber-input">
+                    </div>
+                </div>
+                
+                <div class="form-group cyber-input-group">
+                    <label for="play_time_hours" class="cyber-label">[ЧАСОВ В ИГРЕ]</label>
+                    <input type="number" id="play_time_hours" name="play_time_hours" 
+                           min="0" class="cyber-input" placeholder="[НЕОПРЕДЕЛЕНО]">
+                </div>
+                
+                <div class="form-group cyber-input-group">
+                    <label for="screenshots" class="cyber-label">[СКРИНШОТЫ]</label>
+                    <input type="file" id="screenshots" name="screenshots" 
+                           multiple accept="image/*" class="cyber-input">
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-group cyber-input-group full-width">
+            <label for="opinion" class="cyber-label">[МНЕНИЕ И ЗАМЕТКИ]</label>
+            <textarea id="opinion" name="opinion" rows="5" class="cyber-textarea"></textarea>
+        </div>
+        
+        <div class="form-group cyber-input-group full-width">
+            <label class="cyber-label">[СОХРАНЕНИЯ]</label>
+            <div id="saves-container">
+                <div class="save-item cyber-save-item">
+                    <input type="file" name="save_files" accept=".zip,.rar,.sav" class="cyber-input">
+                    <input type="text" name="save_description" placeholder="[ОПИСАНИЕ]" class="cyber-input">
+                </div>
+            </div>
+            <button type="button" id="add-save-btn" class="neon-button small">[+ ДОБАВИТЬ СОХРАНЕНИЕ]</button>
+        </div>
+        
+        <div class="form-actions-container">
+            <button type="submit" class="neon-button">[ДОБАВИТЬ ИГРУ]</button>
+        </div>
+    </form>
+</div>
+
+<script>
+
+document.getElementById('add-save-btn').addEventListener('click', function() {
+    const container = document.getElementById('saves-container');
+    const newItem = document.createElement('div');
+    newItem.className = 'save-item cyber-save-item';
+    newItem.innerHTML = `
+        <input type="file" name="save_files" accept=".zip,.rar,.sav" class="cyber-input">
+        <input type="text" name="save_description" placeholder="[ОПИСАНИЕ]" class="cyber-input">
+    `;
+    container.appendChild(newItem);
+});
+</script>
+{% endblock %}

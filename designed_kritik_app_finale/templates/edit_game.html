@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block title %}РЕДАКТИРОВАТЬ {{ game.title }}{% endblock %}
+
+{% block content %}
+<div class="cyberpunk-container">
+    <h2 class="neon-heading">РЕДАКТИРОВАТЬ: {{ game.title }}</h2>
+    
+    <form method="POST" enctype="multipart/form-data" class="cyber-form">
+        <div class="form-grid">
+          <!-- Левая колонка -->
+            <div class="form-column">
+                <div class="form-group cyber-input-group">
+                    <label for="title" class="cyber-label">[НАЗВАНИЕ]</label>
+                    <input type="text" id="title" name="title" value="{{ game.title }}" required class="cyber-input">
+                </div>
+                
+                <div class="form-group cyber-input-group">
+                    <label for="cover_image" class="cyber-label">[ОБЛОЖКА]</label>
+                    <input type="file" id="cover_image" name="cover_image" accept="image/*" class="cyber-input">
+                    {% if game.cover_image %}
+                    <div class="current-cover-preview">
+                        <p class="cyber-small">ТЕКУЩАЯ ОБЛОЖКА:</p>
+                        <img src="{{ url_for('send_file', filename='covers/' + game.cover_image) }}" 
+                             alt="Current cover" class="cyber-thumbnail">
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group cyber-input-group">
+                    <label for="rating" class="cyber-label">[РЕЙТИНГ (0-10)]</label>
+                    <input type="number" id="rating" name="rating" min="0" max="10" 
+                           value="{{ game.rating }}" required class="cyber-input">
+                </div>
+            </div>
+            
+            
+            <div class="form-column">
+                <div class="form-group cyber-input-group">
+                    <label class="cyber-label">[ДАТЫ]</label>
+                    <div class="date-fields">
+                        <input type="date" id="start_date" name="start_date" 
+                               value="{{ game.start_date }}" class="cyber-input">
+                        <span class="cyber-separator">—</span>
+                        <input type="date" id="end_date" name="end_date" 
+                               value="{{ game.end_date }}" class="cyber-input">
+                    </div>
+                </div>
+                
+                <div class="form-group cyber-input-group">
+                    <label for="play_time_hours" class="cyber-label">[ЧАСОВ В ИГРЕ]</label>
+                    <input type="number" id="play_time_hours" name="play_time_hours" 
+                           min="0" value="{{ game.play_time_hours }}" class="cyber-input">
+                </div>
+                
+                <div class="form-group cyber-input-group">
+                    <label for="screenshots" class="cyber-label">[СКРИНШОТЫ]</label>
+                    <input type="file" id="screenshots" name="screenshots" 
+                           multiple accept="image/*" class="cyber-input">
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-group cyber-input-group full-width">
+            <label for="opinion" class="cyber-label">[МНЕНИЕ И ЗАМЕТКИ]</label>
+            <textarea id="opinion" name="opinion" rows="5" class="cyber-textarea">{{ game.opinion }}</textarea>
+        </div>
+        
+        <div class="form-group cyber-input-group full-width">
+            <label class="cyber-label">[СОХРАНЕНИЯ]</label>
+            <div id="saves-container">
+                <div class="save-item cyber-save-item">
+                    <input type="file" name="save_files" accept=".zip,.rar,.sav" class="cyber-input">
+                    <input type="text" name="save_description" placeholder="[ОПИСАНИЕ]" class="cyber-input">
+                </div>
+            </div>
+            <button type="button" id="add-save-btn" class="neon-button small">[+ ДОБАВИТЬ СОХРАНЕНИЕ]</button>
+            
+            {% if game.saves %}
+	    <div class="current-saves">
+    		<p class="cyber-small">ТЕКУЩИЕ СОХРАНЕНИЯ:</p>
+    		<ul class="cyber-list">
+        		{% for save in game.saves %}
+        		<li class="cyber-list-item">
+            			<span class="cyber-filename">{{ save.save_file }}</span>
+            			{% if save.description %} 
+            			<span class="cyber-desc">// {{ save.description }}</span>
+            			{% endif %}
+            			<button class="delete-save-btn neon-button xsmall"
+                    			onclick="deleteSave({{ save.id }}, this)"> [X]
+            			</button>
+        		</li>
+        		{% endfor %}
+    		 </ul>
+	    </div>
+	    {% endif %}
+        </div>
+        
+        {% if game.screenshots %}
+        <div class="form-group cyber-input-group full-width">
+            <label class="cyber-label">ТЕКУЩИЕ СКРИНШОТЫ:</label>
+            <div class="current-screenshots">
+                {% for screenshot in game.screenshots %}
+                <div class="screenshot-thumbnail">
+                    <img src="{{ url_for('send_file', filename='screenshots/' + screenshot.image_file) }}" 
+                         alt="Скриншот" class="cyber-thumbnail">
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        
+	<div class="form-actions-container">
+    		<div class="form-actions-left">
+        		<button type="submit" class="neon-button">[СОХРАНИТЬ ИЗМЕНЕНИЯ]</button>
+    		</div>
+    		<div class="form-actions-right">
+        		<button type="button" class="neon-button danger" onclick="deleteGame({{ game.id }})">
+            			[УДАЛИТЬ ИГРУ]
+        		</button>
+    		</div>
+	</div>   
+
+</div>
+{% endblock %}

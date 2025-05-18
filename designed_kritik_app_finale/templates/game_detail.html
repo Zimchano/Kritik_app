@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}{{ game.title }}{% endblock %}
+
+{% block content %}
+<div class="cyberpunk-container">
+    <div class="game-header">
+        <a href="{{ url_for('edit_game', game_id=game.id) }}" class="edit-btn neon-button">
+            [РЕДАКТИРОВАТЬ]
+        </a>
+        
+        <div class="game-title-wrapper">
+            <h2 class="neon-text">{{ game.title }}</h2>
+            <div class="game-meta">
+                <span class="rating cyber-rating">{{ game.rating }}/10</span>
+                {% if game.start_date or game.end_date %}
+                    <span class="dates cyber-dates">
+                        {% if game.start_date %}[{{ game.start_date }}]{% endif %}
+                        {% if game.end_date %} - [{{ game.end_date }}]{% endif %}
+                    </span>
+                {% endif %}
+                {% if game.play_time_hours %}
+                    <span class="play-time cyber-time">[{{ game.play_time_hours }} ЧАСОВ]</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="game-content-grid">
+        {% if game.cover_image %}
+        <div class="game-cover-container">
+            <img src="{{ url_for('send_file', filename='covers/' + game.cover_image) }}" 
+                 alt="{{ game.title }}" 
+                 class="cyber-cover">
+        </div>
+        {% endif %}
+        
+        {% if game.opinion %}
+        <div class="opinion cyber-block">
+            <h3 class="neon-heading">[МНЕНИЕ И ЗАМЕТКИ]</h3>
+            <div class="cyber-text">{{ game.opinion }}</div>
+        </div>
+        {% endif %}
+    </div>
+    
+    {% if game.saves %}
+    <div class="saves-section cyber-block">
+        <h3 class="neon-heading">[СОХРАНЕНИЯ]</h3>
+        <ul class="saves-list cyber-list">
+            {% for save in game.saves %}
+                <li class="cyber-list-item">
+                    <a href="{{ url_for('send_file', filename='saves/' + save.save_file) }}" 
+                       download="{{ save.save_file }}"
+                       class="cyber-link">
+                        [СКАЧАТЬ: {{ save.save_file }}]
+                    </a>
+                    {% if save.description %} 
+                    <span class="cyber-desc">// {{ save.description }}</span>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+    
+{% if game.screenshots %}
+<div class="screenshots-section cyber-block">
+    <h3 class="neon-heading">[СКРИНШОТЫ]</h3>
+    <div class="screenshots-grid">
+        {% for screenshot in game.screenshots %}
+            <div class="screenshot-container">
+                <img src="{{ url_for('send_file', filename='screenshots/' + screenshot.image_file) }}" 
+                     alt="Скриншот из {{ game.title }}"
+                     class="cyber-screenshot"
+                     onclick="openFullscreen(this)">
+                <button class="delete-screenshot-btn neon-button small"
+                        onclick="deleteScreenshot({{ screenshot.id }}, this)">
+                    [X]
+                </button>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div id="fullscreen-modal" class="cyber-modal" onclick="closeFullscreen()">
+    <span class="close-btn">&times;</span>
+    <img class="modal-content" id="fullscreen-image">
+</div>
+{% endif %}
+{% endblock %}
